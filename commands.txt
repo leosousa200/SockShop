@@ -1,0 +1,15 @@
+Começar Kafka broker:
+	1. Abrir 2 terminais na pasta de instalação do kafka;
+	2. Executar:  ./bin/zookeeper-server-start.sh config/zookeeper.properties
+	3. Executar:  ./bin/kafka-server-start.sh config/server.properties
+	4. Para parar:  ./bin/kafka-server-stop.sh
+
+Começar Kafka topic:
+	1. Abrir terminal;
+	2. Executar: kafka-topics.sh --bootstrap-server localhost:9092 --topic demo_java --create --partitions 3 --replication-factor 1
+
+
+Começar Kafka consumer:
+	1. Abrir terminal;
+	2. Executar: kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic demo_java
+	3. Executar código de producer

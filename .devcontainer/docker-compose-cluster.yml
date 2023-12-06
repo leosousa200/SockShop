@@ -12,7 +12,7 @@ services:
       POSTGRES_PASSWORD: nopass
       POSTGRES_DB: project3
     volumes:
-      - ../sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - ../sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.1

@@ -1,0 +1,14 @@
+{
+  "name" : "jdbc-source-sales",
+  "config" : {
+    "connector.class" : "io.confluent.connect.jdbc.JdbcSourceConnector",
+    "connection.url" : "jdbc:postgresql://database:5432/project3",
+    "connection.user" : "postgres",
+    "connection.password" : "nopass",
+    "dialect.name" : "PostgreSqlDatabaseDialect",
+    "mode" : "bulk",
+    "query" : "SELECT Suppliers.name, Socks.ID, Socks.supplier_id, Socks.type, Socks.buy_price FROM Socks INNER JOIN Suppliers ON Socks.supplier_id=Suppliers.id;",
+    "poll.interval.ms" : "12000",
+    "topic.prefix" : "db_info_sales"
+  }
+}
