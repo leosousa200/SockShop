@@ -43,7 +43,7 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://broker1:9092,EXTERNAL://localhost:29092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_CREATE_TOPICS: "sock_sales_topic:3:1,sock_purchases_topic:3:1,db_info_topic:3:1,topic-5:3:1,topic-6:3:1,topic-7:3:1,topic-8:3:1,topic-9:3:1,topic-10:3:1,topic-11:3:1,topic-12:3:1,topic-13:3:1,topic-14:3:1,topic-15:3:1"
+      KAFKA_CREATE_TOPICS: "sock_sales_topic:3:1,sock_purchases_topic:3:1,db_info_topic:3:1,topic-5:3:1,topic-6:3:1,topic-7:3:1,topic-8:3:1,topic-9:3:1,topic-10:3:1,topic-11:3:1,topic-12:3:1,topic-13:3:1,topic-14:3:1,topic-15:3:1,topic-16:3:1,topic-17:3:1"
 
   connect:
     image: confluentinc/cp-kafka-connect
