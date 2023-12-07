@@ -56,7 +56,7 @@ public class FlowHandler {
                         // Initiate the aggregate value
                         () -> null,
                         // adder (doing nothing, just passing the user through as the value)
-                        (applicationId, user, aggValue) -> user
+                        (key, value, total) -> value
                 ).mapValues((values) -> String.valueOf(values))
                 .toStream();
 
@@ -67,14 +67,22 @@ public class FlowHandler {
                         // Initiate the aggregate value
                         () -> null,
                         // adder (doing nothing, just passing the user through as the value)
-                        (applicationId, user, aggValue) -> user
+                        (key, value, total) -> value
                 ).mapValues((values) -> String.valueOf(values))
                 .toStream();
 
         KStream<Integer, String> joinedOrders = salesOrders
                 .join(purchasesOrders,
                         (leftValue, rightValue) -> leftValue + ';' + rightValue,
-                        JoinWindows.of(Duration.ofSeconds(5)));
+                        JoinWindows.ofTimeDifferenceWithNoGrace(Duration.ofSeconds(5)));
+
+        // STREAMS FOR SOCK TYPE
+        KStream<Integer, String> purchasesOrdersTypes= builder.stream(inputTopic_sales)
+                .filter((key, value) -> String.valueOf(value).split(";").length == 6)
+                .groupBy((key, value) -> convertStringToNumber(String.valueOf(value).split(";")[3]))
+                .aggregate(() -> "0.0",
+                        (key, value, total) -> total)
+                .toStream();
 
         //Requirements
         //5. Get the revenue per sock pair sale.
@@ -140,7 +148,7 @@ public class FlowHandler {
 
         //14. Get the total revenue in the last hour1 (use a tumbling time window).
         Duration windowDurationSales = Duration.ofSeconds(120);
-        TimeWindows tumbWindowSales = TimeWindows.of(windowDurationSales);
+        TimeWindows tumbWindowSales = TimeWindows.ofSizeWithNoGrace(windowDurationSales);
 
         salesOrders
                 .mapValues((key,value) -> String.format(java.util.Locale.US, "%.2f", Float.parseFloat(value.split(";")[4]) * Float.parseFloat(value.split(";")[5])))
@@ -153,7 +161,7 @@ public class FlowHandler {
 
         //15. Get the total expenses in the last hour (use a tumbling time window).
         Duration windowDurationPurchases= Duration.ofSeconds(120);
-        TimeWindows tumbWindowPurchases= TimeWindows.of(windowDurationPurchases);
+        TimeWindows tumbWindowPurchases= TimeWindows.ofSizeWithNoGrace(windowDurationPurchases);
 
         purchasesOrders
                 .mapValues((key,value) -> String.format(java.util.Locale.US, "%.2f", Float.parseFloat(value.split(";")[4]) * Float.parseFloat(value.split(";")[5])))
@@ -166,7 +174,7 @@ public class FlowHandler {
 
         //16. Get the total profits in the last hour (use a tumbling time window).
         Duration windowDurationProfit = Duration.ofSeconds(120);
-        TimeWindows tumbWindowProfit = TimeWindows.of(windowDurationProfit);
+        TimeWindows tumbWindowProfit = TimeWindows.ofSizeWithNoGrace(windowDurationProfit);
         joinedOrders
                 .mapValues((key,value) -> String.format(java.util.Locale.US, "%.2f", (Float.parseFloat(value.split(";")[4]) * Float.parseFloat(value.split(";")[5]) - (Float.parseFloat(value.split(";")[10]) * Float.parseFloat(value.split(";")[11])))))
                 .groupBy((key, value) -> 100)
@@ -177,8 +185,8 @@ public class FlowHandler {
                 .to("topic-16");
 
         //17. Get the name of the sock supplier generating the highest profit sales. Include the value of such sales.
-
-
+        joinedOrders
+                .groupBy((key,value) -> Integer.parseInt(value.split(";")[1]));
         // start kafkaStreams
         KafkaStreams streams = new KafkaStreams(builder.build(), props);
         streams.start();
