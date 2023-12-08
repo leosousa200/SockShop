@@ -1,15 +1,29 @@
-Começar Kafka broker:
-	1. Abrir 2 terminais na pasta de instalação do kafka;
-	2. Executar:  ./bin/zookeeper-server-start.sh config/zookeeper.properties
-	3. Executar:  ./bin/kafka-server-start.sh config/server.properties
-	4. Para parar:  ./bin/kafka-server-stop.sh
+Compose:
+docker-compose -f docker-compose-cluster.yml up
+-----------------------------
+Add connectors:
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8083/connectors -d @source_purchases.json
 
-Começar Kafka topic:
-	1. Abrir terminal;
-	2. Executar: kafka-topics.sh --bootstrap-server localhost:9092 --topic demo_java --create --partitions 3 --replication-factor 1
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8083/connectors -d @source_sales.json
+
+curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8083/connectors -d @sink.json
+-----------------------------
+Postgresql:
+
+psql -U  postgres -h 127.0.0.1 -p 5432 -d project3
 
 
-Começar Kafka consumer:
-	1. Abrir terminal;
-	2. Executar: kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic demo_java
-	3. Executar código de producer
+INSERT INTO socks (type, buy_price, supplier_id)
+VALUES ('super', 6.79, 1);
+
+INSERT INTO suppliers(name)
+VALUES('OtherSocks');
+
+SELECT *
+FROM socks;
+
+SELECT *
+FROM salesdborders;
+-----------------------------
+Run scripts (read all topics):
+cd Desktop/rep/IS/A3

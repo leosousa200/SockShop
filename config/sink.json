@@ -1,14 +1,14 @@
 {
-  "name" : "jdbc-postgresql-sink-example",
+  "name" : "jdbc-postgresql-sink",
   "config" : {
     "connector.class" : "io.confluent.connect.jdbc.JdbcSinkConnector",
     "connection.url" : "jdbc:postgresql://database:5432/project3?user=postgres&password=nopass",
     "dialect.name" : "PostgreSqlDatabaseDialect",
     "tasks.max" : "1",
-    "topics" : "SinkTopicExample",
+    "topics" : "salesdborders",
     "auto.create" : "true",
     "insert.mode" : "upsert",
-    "pk.mode" : "record_value",
+    "pk.mode": "record_value",
     "pk.fields" : "id",
     "key.converter" : "org.apache.kafka.connect.storage.StringConverter",
     "value.converter" : "org.apache.kafka.connect.json.JsonConverter",

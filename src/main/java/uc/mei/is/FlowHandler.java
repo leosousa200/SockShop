@@ -253,6 +253,12 @@ public class FlowHandler {
                 .mapValues((key, value) -> String.format(Locale.US,"Supplier gerando mais lucro %s: %.2f€",value.split(";")[1],Float.valueOf(value.split(";")[0])))
                 .toStream().to("topic-17");
 
+        //SINK Operation (same as in the req 5)
+        salesOrders
+                .mapValues((key, value) -> String.format(Locale.US,"{\"schema\":{\"type\":\"struct\",\"fields\":[{\"type\":\"string\",\"optional\":false,\"field\":\"id\"},{\"type\":\"string\",\"optional\":false,\"field\":\"name\"},{\"type\":\"string\",\"optional\":false,\"field\":\"type\"},{\"type\":\"double\",\"optional\":false,\"field\":\"sale\"}],\"optional\":false},\"payload\":{\"id\":\"%s\",\"name\":\"%s\",\"type\":\"%s\", \"sale\":%.2f}}"
+                        ,value.split(";")[0],value.split(";")[2],value.split(";")[3],Float.parseFloat(value.split(";")[4]) * Float.parseFloat(value.split(";")[5])))
+                .to("salesdborders");
+
 
         // start kafkaStreams
         KafkaStreams streams = new KafkaStreams(builder.build(), props);
