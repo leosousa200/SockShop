@@ -51,9 +51,8 @@ public class FlowHandler {
                 .filter((key, value) -> String.valueOf(value).split(";").length == 6)
                 .groupBy((key, value) -> Integer.valueOf(String.valueOf(value).split(";")[0]))
                 .aggregate(
-                        // Initiate the aggregate value
+                        // inicia valor
                         () -> null,
-                        // adder (doing nothing, just passing the user through as the value)
                         (key, value, total) -> value
                 ).mapValues((values) -> String.valueOf(values))
                 .toStream();
@@ -62,9 +61,8 @@ public class FlowHandler {
         KStream<Integer, String> purchasesOrders = builder.stream(inputTopic_purchases).filter((key, value) -> String.valueOf(value).split(";").length == 6)
                 .groupBy((key, value) -> Integer.valueOf(String.valueOf(value).split(";")[0]))
                 .aggregate(
-                        // Initiate the aggregate value
+                        // inicia valor
                         () -> null,
-                        // adder (doing nothing, just passing the user through as the value)
                         (key, value, total) -> value
                 ).mapValues((values) -> String.valueOf(values))
                 .toStream();
@@ -137,9 +135,8 @@ public class FlowHandler {
         purchasesOrders
                 .groupBy((key, value) -> convertStringToNumber(value.split(";")[3]))
                 .aggregate(
-                        // Initiate the aggregate value
+                        // inicia valor
                         () -> "0;0.0",
-                        // adder (doing nothing, just passing the user through as the value)
                         (key, value, total) -> String.format(Locale.US,"%s;%s;%s",(String.valueOf(Integer.valueOf(total.split(";")[0]) + Integer.valueOf(value.split(";")[5]))),
                                 (String.valueOf(Float.valueOf(total.split(";")[1]) + Integer.valueOf(value.split(";")[5]) * Float.valueOf(value.split(";")[4]))),value.split(";")[3]))
                         .mapValues((key, value) -> String.format(Locale.US,"Tipo %s , preco medio : %.2f€",value.split(";")[2],Float.valueOf(value.split(";")[1])/Integer.valueOf(value.split(";")[0])))
@@ -152,9 +149,8 @@ public class FlowHandler {
         purchasesOrders
                 .groupBy((key, value) -> 100)
                 .aggregate(
-                        // Initiate the aggregate value
+                        // inicia valor
                         () -> "0;0.0",
-                        // adder (doing nothing, just passing the user through as the value)
                         (key, value, total) -> String.format(Locale.US,"%s;%s", (String.valueOf(Integer.valueOf(total.split(";")[0]) + Integer.valueOf(value.split(";")[5]))),
                                 (String.valueOf(Float.valueOf(total.split(";")[1]) + Integer.valueOf(value.split(";")[5]) * Float.valueOf(value.split(";")[4])))))
                         .mapValues((key, value) -> String.format(Locale.US,"Preco medio de um par de meias: %.2f€",Float.valueOf(value.split(";")[1])/Integer.valueOf(value.split(";")[0])))
@@ -168,17 +164,15 @@ public class FlowHandler {
         joinedOrders
                 .groupBy((key, value) -> convertStringToNumber(value.split(";")[3]))
                 .aggregate(
-                        // Initiate the aggregate value
+                        // inicia valor
                         () -> "0.0;a",
-                        // adder (doing nothing, just passing the user through as the value)
                         (key, value, total) -> String.format(Locale.US,"%s;%s",
                                 (String.valueOf(Float.valueOf(total.split(";")[0]) + ((Integer.valueOf(value.split(";")[5]) * Float.valueOf(value.split(";")[4]))) - (Integer.valueOf(value.split(";")[11]) * Float.valueOf(value.split(";")[10]))) ), value.split(";")[3]))
                 .toStream()
                 .groupBy((key, value) -> 100)
                 .aggregate(
-                        // Initiate the aggregate value
+                        // inicia valor
                         () -> "0.0;a",
-                        // adder (doing nothing, just passing the user through as the value)
                         (key, value, total) -> {
                             if(Float.valueOf(total.split(";")[0]) < Float.valueOf(value.split(";")[0]))
                                 return value;
@@ -243,17 +237,15 @@ public class FlowHandler {
         joinedOrders
                 .groupBy((key, value) -> Integer.valueOf(value.split(";")[1]))
                 .aggregate(
-                        // Initiate the aggregate value
+                        // inicia valor
                         () -> "0.0;a",
-                        // adder (doing nothing, just passing the user through as the value)
                         (key, value, total) -> String.format(Locale.US,"%s;%s",
                                 (String.valueOf(Float.valueOf(total.split(";")[0]) + ((Integer.valueOf(value.split(";")[5]) * Float.valueOf(value.split(";")[4]))) - (Integer.valueOf(value.split(";")[11]) * Float.valueOf(value.split(";")[10]))) ), value.split(";")[2]))
                 .toStream()
                 .groupBy((key, value) -> 100)
                 .aggregate(
-                        // Initiate the aggregate value
+                        // inicia valor
                         () -> "0.0;a",
-                        // adder (doing nothing, just passing the user through as the value)
                         (key, value, total) -> {
                             if(Float.valueOf(total.split(";")[0]) < Float.valueOf(value.split(";")[0]))
                                 return value;
