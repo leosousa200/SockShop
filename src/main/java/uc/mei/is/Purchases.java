@@ -24,7 +24,7 @@ public class Purchases {
     public static void main(String[] args) throws InterruptedException {
 
         //general properties
-        String brokersIP = "127.0.0.1:29092";
+        String brokersIP = "127.0.0.1:29092,127.0.0.1:29093,127.0.0.1:29094";
         String inputTopic = "db_info_suppliers";
         String outputTopic = "sock_purchases_topic";
         // String groupId = "purchaseGroup";
@@ -80,8 +80,8 @@ public class Purchases {
                 supList.add(recordInfo);
             }
 
-            int nrSocks = supList.size() - 1;
-            if(nrSocks >= 0) {
+            int nrSocks = supList.size();
+            if(nrSocks > 0) {
                 int quant = rand.nextInt(5) + 1;
                 try {
                 RecordInfo chosen = supList.get(rand.nextInt(nrSocks));

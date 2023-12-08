@@ -24,7 +24,7 @@ public class Costumers {
     private static final int MAX_PERC_PROFIT = 50;
     public static void main(String[] args) {
         //general properties
-        String brokersIP = "127.0.0.1:29092";
+        String brokersIP = "127.0.0.1:29092,127.0.0.1:29093,127.0.0.1:29094";
         String inputTopic = "db_info_sales";
         String outputTopic = "sock_sales_topic";
         // String groupId = "purchaseGroup";
@@ -85,8 +85,8 @@ public class Costumers {
                 supList.add(recordInfo);
             }
 
-            int nrSocks = supList.size() - 1;
-            if (nrSocks >= 0) {
+            int nrSocks = supList.size();
+            if (nrSocks > 0) {
                 int quant = rand.nextInt(5) + 1;
                 try {
                     RecordInfo chosen = supList.get(rand.nextInt(nrSocks));

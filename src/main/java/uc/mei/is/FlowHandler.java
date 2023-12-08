@@ -23,7 +23,7 @@ public class FlowHandler {
     private static final Logger log = LoggerFactory.getLogger(FlowHandler.class);
 
     public static void main(String[] args) {
-        String bootstrapServers = "127.0.0.1:29092";
+        String bootstrapServers = "127.0.0.1:29092,127.0.0.1:29093,127.0.0.1:29094";
         String inputTopic_sales = "sock_sales_topic";
         String inputTopic_purchases = "sock_purchases_topic";
         String outputTopic = "result_topic";
@@ -134,7 +134,18 @@ public class FlowHandler {
 
         //11. Get the average amount spent in each purchase (separated by sock type).
 
+   
         //12. Get the average amount spent in each purchase (aggregated for all socks).
+        purchasesOrders
+                .groupBy((key, value) -> 100)
+                .aggregate(
+                        // Initiate the aggregate value
+                        () -> "0;0.0",
+                        // adder (doing nothing, just passing the user through as the value)
+                        (key, value, total) -> String.format(Locale.US,"%s;%s", (String.valueOf(Integer.valueOf(total.split(";")[0]) + Integer.valueOf(value.split(";")[5]))),
+                                (String.valueOf(Float.valueOf(total.split(";")[1]) + Integer.valueOf(value.split(";")[5]) * Float.valueOf(value.split(";")[4])))))
+                        .mapValues((key, value) -> String.format(Locale.US,"%.2f",Float.valueOf(value.split(";")[1])/Integer.valueOf(value.split(";")[0])))
+                .toStream().to("topic-12");
 
         //13. Get the sock type with the highest profit of all (only one if there is a tie).
 
