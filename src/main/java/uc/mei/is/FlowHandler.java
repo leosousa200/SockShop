@@ -220,6 +220,27 @@ public class FlowHandler {
                 .to("topic-16");
 
         //17. Get the name of the sock supplier generating the highest profit sales. Include the value of such sales.
+        joinedOrders
+                .groupBy((key, value) -> Integer.valueOf(value.split(";")[1]))
+                .aggregate(
+                        // Initiate the aggregate value
+                        () -> "0.0;a",
+                        // adder (doing nothing, just passing the user through as the value)
+                        (key, value, total) -> String.format(Locale.US,"%s;%s",
+                                (String.valueOf(Float.valueOf(total.split(";")[0]) + ((Integer.valueOf(value.split(";")[5]) * Float.valueOf(value.split(";")[4]))) - (Integer.valueOf(value.split(";")[11]) * Float.valueOf(value.split(";")[10]))) ), value.split(";")[2]))
+                .toStream()
+                .groupBy((key, value) -> 100)
+                .aggregate(
+                        // Initiate the aggregate value
+                        () -> "0.0;a",
+                        // adder (doing nothing, just passing the user through as the value)
+                        (key, value, total) -> {
+                            if(Float.valueOf(total.split(";")[0]) < Float.valueOf(value.split(";")[0]))
+                                return value;
+                            return total;
+                        })
+                .mapValues((key, value) -> String.format(Locale.US,"Supplier gerando mais lucro %s: %.2f€",value.split(";")[1],Float.valueOf(value.split(";")[0])))
+                .toStream().to("topic-17");
 
 
 
