@@ -160,7 +160,6 @@ public class FlowHandler {
         // Junta todas as meias que teem o mesmo tipo, para cada grupo junta o lucro e o nome
         // do tipo de meia, junta todas para conseguir encontrar a que teve maior lucro,
         // faz map dos valores para personalizar o texto
-
         joinedOrders
                 .groupBy((key, value) -> convertStringToNumber(value.split(";")[3]))
                 .aggregate(
@@ -186,7 +185,7 @@ public class FlowHandler {
         // Map dos valores para ter o ganho, junta todas as meias no mesmo grupo
         // aplica uma tumbling de 1 hora e junta os valores
 
-        Duration windowDurationSales = Duration.ofSeconds(120);
+        Duration windowDurationSales = Duration.ofHours(1);
         TimeWindows tumbWindowSales = TimeWindows.ofSizeWithNoGrace(windowDurationSales);
 
         salesOrders
@@ -202,7 +201,7 @@ public class FlowHandler {
         // Map dos valores para ter o gasto, junta todas as meias no mesmo grupo
         // aplica uma tumbling de 1 hora e junta os valores
 
-        Duration windowDurationPurchases = Duration.ofSeconds(120);
+        Duration windowDurationPurchases = Duration.ofHours(1);
         TimeWindows tumbWindowPurchases = TimeWindows.ofSizeWithNoGrace(windowDurationPurchases);
 
         purchasesOrders
@@ -218,7 +217,7 @@ public class FlowHandler {
         // Map dos valores para ter o lucro, junta todas as meias no mesmo grupo
         // aplica uma tumbling de 1 hora e junta os valores
 
-        Duration windowDurationProfit = Duration.ofSeconds(120);
+        Duration windowDurationProfit = Duration.ofHours(1);
         TimeWindows tumbWindowProfit = TimeWindows.ofSizeWithNoGrace(windowDurationProfit);
         joinedOrders
                 .mapValues((key, value) -> String.format(java.util.Locale.US, "%.2f", (Float.parseFloat(value.split(";")[4]) * Float.parseFloat(value.split(";")[5]) - (Float.parseFloat(value.split(";")[10]) * Float.parseFloat(value.split(";")[11])))))
